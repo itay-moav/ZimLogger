@@ -62,6 +62,8 @@ abstract class aLogStream{
 			} else {
 			    $text_inp = print_r($inp,true);
 			}
+		} else {
+		    $text_inp = $inp;
 		}
 		
 		$full_stack_data = [];
