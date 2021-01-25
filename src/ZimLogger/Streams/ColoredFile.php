@@ -61,21 +61,25 @@ class ColoredFile extends aLogStream{
 	 * {@inheritDoc}
 	 * @see \ZimLogger\Streams\aLogStream::log()
 	 */
-	protected function log($inp,$severity,$full_stack_data = null):void{
+	protected function log(string $inp,int $severity,array $full_stack_data = []):void{
 	    //TODO move to a formatter later.
 	    $inp = str_replace("\t","    ",$inp);
 	    if($severity == self::VERBOSITY_LVL_DEBUG){
-	        $severity_out = self::colorize($severity,self::VI_COLOR__GREEN);
+	        $severity_out = self::colorize($inp,self::VI_COLOR__GREEN);
 	        $inp = preg_replace(self::$sql_keywords,self::colorize("$0",self::VI_COLOR__WHITE),$inp);// var_dump($inp);
 	    }else{
-	        $severity_out = self::colorize($severity,self::VI_COLOR__RED);
+	        $severity_out = self::colorize($inp,self::VI_COLOR__RED);
 	    }
 	    	
 	    if($severity < self::VERBOSITY_LVL_INFO){
+	        $inp = $inp?:' INP IS EMPTY? ';
 	        $inp = self::colorize($inp,self::VI_COLOR__RED);
 	    }
 	    
 		$stream = fopen($this->log_name, 'a');
+		if(!$stream){
+		    throw new \Exception("Could not open log file [{$this->log_name}]");
+		}
 		fwrite($stream, "[{$severity_out}][" . self::colorize(@date('h:i:s', time()),self::VI_COLOR__GRAY) . "] " . $inp . PHP_EOL);
 		
 		if($full_stack_data){
@@ -86,10 +90,10 @@ class ColoredFile extends aLogStream{
 	
 	/**
 	 * @param string $txt
-	 * @param string $color
+	 * @param int $color
 	 * @return string
 	 */
-	static private function colorize($txt,$color):string{
+	static private function colorize(string $txt,int $color):string{
 	    return "\033[38;5;{$color}m{$txt}\033[0m";
 	}
 }

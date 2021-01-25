@@ -18,18 +18,15 @@ class File extends aLogStream{
 	 * {@inheritDoc}
 	 * @see \ZimLogger\Streams\aLogStream::log()
 	 */
-	protected function log($inp,$severity,$full_stack_data = null):void{
-		try {
-			$stream = fopen($this->log_name, 'a');
-			fwrite($stream, "[{$severity}][".@date('h:i:s', time())."] ".$inp.PHP_EOL);
-			if($full_stack_data){
-			    fwrite($stream, "[FULL STACK] \n" . print_r($full_stack_data,true) . PHP_EOL);
-			}
-			fclose($stream);
-		} 
-		catch (\Exception $e)
-		{
-			throw new \Exception('Unable to open log file.');
+	protected function log(string $inp,int $severity,array $full_stack_data = []):void{
+		$stream = fopen($this->log_name, 'a');
+		if(!$stream){
+		    throw new \Exception("Could not open [{$this->log_name}]");
 		}
+		fwrite($stream, "[{$severity}][".@date('h:i:s', time())."] ".$inp.PHP_EOL);
+		if($full_stack_data){
+		    fwrite($stream, "[FULL STACK] \n" . print_r($full_stack_data,true) . PHP_EOL);
+		}
+		fclose($stream);
 	}
 }

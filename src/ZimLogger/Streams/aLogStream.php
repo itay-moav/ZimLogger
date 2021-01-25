@@ -6,17 +6,27 @@ abstract class aLogStream{
 					VERBOSITY_LVL_ERROR		= 1,
 					VERBOSITY_LVL_FATAL		= 0
 	;
-	
-	protected $log_name 	   			= '', 
-			  $verbosity_level 			= null, 
-	          $target_stream 			= null,
-	          $use_low_memory_footprint = false
+
+	/**
+	 * @var string $log_name
+	 * @var int $verbosity_level
+	 * @var string $target_stream
+	 * @var boolean $use_low_memory_footprint
+	 * @var array<callable> $full_stack_subscribers list of functions that will be called when the full stack data log is triggered - to return data to be dumped into log
+	 */
+	protected $log_name, 
+			  $verbosity_level, 
+	          $target_stream,
+	          $use_low_memory_footprint = false,
+	          $full_stack_subscribers   = []
 	;
 	
 	/**
-	 * This function writes to the designated output stream/resources.
+	 * @param string $inp
+	 * @param int $severity
+	 * @param array<array> $full_stack_data
 	 */
-	abstract protected function log($txt,$severity,$full_stack_data=null);
+	abstract protected function log(string $inp,int $severity,array $full_stack_data=[]):void;
 	
 	/**
 	 * Translate to string the input, how to output? that depends on how
@@ -24,44 +34,45 @@ abstract class aLogStream{
 	 *
 	 * @param mixed $inp
 	 * @param int $severity
-	 * @param string $full_stack
+	 * @param bool $full_stack
 	 */
-	protected function tlog($inp,int $severity,bool $full_stack=false){
+	protected function tlog($inp,int $severity,bool $full_stack=false):void{
+	    $text_inp = '';
 		if ($inp === null){
-			$inp = 'NULL';
+		    $text_inp = 'NULL';
 			
 		}elseif($inp instanceof \Throwable){
-			//do nothing
+		    $text_inp = $inp . '';//cast to string
 			
 		}elseif(!is_string($inp) && !is_numeric($inp)){
 			if($this->use_low_memory_footprint){
 				switch (gettype($inp)){
 					case 'array':
-						$inp = print_r($inp,true);
+					    $text_inp = print_r($inp,true);
 						break;
 						
 					case 'object':
-						$inp = get_class($inp);
+					    $text_inp = get_class($inp);
 						break;
 						
 					default:
-						$inp = ' GOT TYPE OF VAR ' . gettype($inp);
+					    $text_inp = ' GOT TYPE OF VAR ' . gettype($inp);
 						break;
 				}
 			} else {
-				$inp = print_r($inp,true);
+			    $text_inp = print_r($inp,true);
 			}
 		}
 		
-		$full_stack_data = null;
+		$full_stack_data = [];
 		if($full_stack){
-			$full_stack_data['session'] = isset($_SESSION)?$_SESSION:[];
-			$full_stack_data['request'] = (isset($_REQUEST)?$_REQUEST:[]);
-			$full_stack_data['request'][]= ' ANDTHERAWBODYIS ' . file_get_contents('php://input');
-			$full_stack_data['server']  = isset($_SERVER)?$_SERVER:[];
-			$full_stack_data['database'] = print_r(\Talis\Services\Sql\Factory::getDebugInfo(),true);
+			$full_stack_data['session']   = $_SESSION ?? [];
+			$full_stack_data['request']   = $_REQUEST;//it is always set
+			$full_stack_data['request']['AND THE RAW BODY IS'] = file_get_contents('php://input');
+			$full_stack_data['server']    = $_SERVER;
+			$full_stack_data['subscribers']  = $this->get_full_stack_subscribers_data();
 		}
-		$this->log($inp,$severity,$full_stack_data);
+		$this->log($text_inp,$severity,$full_stack_data);
 	}
 
 	/**
@@ -69,7 +80,7 @@ abstract class aLogStream{
 	 * @param int $verbosity_level
 	 * @param string $target_stream
 	 */
-	final public function __construct($log_name,$verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false){
+	final public function __construct(string $log_name,int $verbosity_level,string $target_stream='',bool $use_low_memory_footprint=false){
 		$this->log_name 				= $log_name;
 		$this->verbosity_level 			= $verbosity_level;
 		$this->target_stream 			= $target_stream;
@@ -83,6 +94,27 @@ abstract class aLogStream{
 	 */
 	protected function init():\ZimLogger\Streams\aLogStream{
 		return $this;
+	}
+	
+	/**
+	 * Function to fetch more data when full stack is triggered.
+	 * 
+	 * @param callable $func
+	 */
+	public function full_stack_subscribe(callable $func):void{
+	    $this->full_stack_subscribers[] = $func;
+	}
+	
+	/**
+	 * Loops on callables and put it into an array
+	 * @return array<mixed>
+	 */
+	protected function get_full_stack_subscribers_data():array{
+	    $debug_data = [];
+	    foreach($this->full_stack_subscribers as $subscriber){
+	        $debug_data[] = print_r($subscriber(),true);
+	    }
+	    return $debug_data;
 	}
 	
 	/**
