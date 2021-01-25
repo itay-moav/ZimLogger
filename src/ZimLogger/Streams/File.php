@@ -1,11 +1,24 @@
-<?php namespace Talis\Logger\Streams;
+<?php namespace ZimLogger\Streams;
 class File extends aLogStream{
-	protected function init(){
+    
+    /**
+     * @return File (this)
+     * 
+     * {@inheritDoc}
+     * @see \ZimLogger\Streams\aLogStream::init()
+     */
+    protected function init():\ZimLogger\Streams\aLogStream{
 		$this->log_name = $this->target_stream . $this->log_name . @date('m_d_Y', time()).'.log';
 		return $this;	
 	}
 	
-	protected function log($inp,$severity,$full_stack_data = null){
+	/**
+	 * @throws \Exception
+	 * 
+	 * {@inheritDoc}
+	 * @see \ZimLogger\Streams\aLogStream::log()
+	 */
+	protected function log($inp,$severity,$full_stack_data = null):void{
 		try {
 			$stream = fopen($this->log_name, 'a');
 			fwrite($stream, "[{$severity}][".@date('h:i:s', time())."] ".$inp.PHP_EOL);

@@ -1,4 +1,4 @@
-<?php namespace Talis\Logger;
+<?php namespace ZimLogger;
 
 /**
  * Logger Factory and manager, handles creating logs for systems and holding API for the current log.
@@ -10,7 +10,7 @@ abstract class MainZim{
     }
     
 	/**
-	 * @var \Talis\Logger\Streams\aLogStream current Logger to be used in the app.
+	 * @var \ZimLogger\Streams\aLogStream current Logger to be used in the app.
 	 *             To change current Logger, simply use the factory again (or just instantiate 
 	 *             the logger you want.
 	 */
@@ -33,7 +33,7 @@ abstract class MainZim{
 	 * @param bool $use_low_memory_footprint This flag will prevent from a full dump of an object, as there might be huge objects which can cause out of memory errors.
 	 *                                       Flag can also be used differently in each concrete logger 
 	 *
-	 * @return \Talis\Logger\MainZim
+	 * @return \ZimLogger\MainZim
 	 */
 	static public function setGlobalLogger(string $log_name,string $logger_classname,int $verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false):Streams\aLogStream{
 		return self::$CurrentLogger = self::factory($log_name,$logger_classname,$verbosity_level,$target_stream,$use_low_memory_footprint);
@@ -56,21 +56,21 @@ abstract class MainZim{
 	 * @param bool $use_low_memory_footprint This flag will prevent from a full dump of an object, as there might be huge objects which can cause out of memory errors.
 	 *                                       Flag can also be used differently in each concrete logger
 	 *
-	 * @return \Talis\Logger\MainZim
+	 * @return \ZimLogger\MainZim
 	 */
-	static public function factory(string $log_name,string $logger_classname,int $verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false):\Talis\Logger\Streams\aLogStream{
+	static public function factory(string $log_name,string $logger_classname,int $verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
 	    $class_name = '';
 	    if(strpos($logger_classname, '_')){
 	        $class_name = '\\' . $logger_classname;  
 	    } elseif(strpos($logger_classname, '\\') !== false){
 	        $class_name = $logger_classname;
 	    } else {
-	        $class_name = '\Talis\Logger\Streams\\' . ucfirst($logger_classname);
+	        $class_name = '\ZimLogger\Streams\\' . ucfirst($logger_classname);
 	    }
 	    return new $class_name($log_name,$verbosity_level,$target_stream,$use_low_memory_footprint);
 	}
 	
-	static public function factory2(string $log_name,string $logger_full_classname,int $verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false):\Talis\Logger\Streams\aLogStream{
+	static public function factory2(string $log_name,string $logger_full_classname,int $verbosity_level,$target_stream=null,bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
 	    return new $logger_full_classname($log_name,$verbosity_level,$target_stream,$use_low_memory_footprint);
 	}
 	
@@ -78,7 +78,7 @@ abstract class MainZim{
 	 * Switches the current logger to use a low memory foot print.
 	 * until this becomes an issue, this value will not pass on if current logger is switched inside the same session.
 	 */
-	static public function currentLoggerUseLowMemoryFootprint(){
+	static public function currentLoggerUseLowMemoryFootprint():void{
 		self::$CurrentLogger->setUseLowMemoryFootprint(true);
 	}
 }

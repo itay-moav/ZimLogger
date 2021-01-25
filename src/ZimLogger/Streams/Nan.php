@@ -1,4 +1,4 @@
-<?php namespace Talis\Logger\Streams;
+<?php namespace ZimLogger\Streams;
 /**
  * Not a real logger -> this is a sink
  * 
@@ -6,7 +6,12 @@
  */
 class Nan extends aLogStream{
     	
-	protected function log($inp,$severity,$full_stack_data = null){
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \ZimLogger\Streams\aLogStream::log()
+     */
+	protected function log($inp,$severity,$full_stack_data = null):void{
         //abba nagila
 	}
 }

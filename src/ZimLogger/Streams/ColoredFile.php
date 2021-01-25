@@ -1,4 +1,4 @@
-<?php namespace Talis\Logger\Streams;
+<?php namespace ZimLogger\Streams;
 class ColoredFile extends aLogStream{
     const   VI_COLOR__RED   = 9,
             VI_COLOR__BLUE  = 12,
@@ -7,7 +7,11 @@ class ColoredFile extends aLogStream{
             VI_COLOR__GRAY  = 7
     ;
     
-    static $sql_keywords = ['/INSERT INTO/', 
+    /**
+     * @var array<string>
+     */
+    static private $sql_keywords = [
+                            '/INSERT INTO/', 
                             '/UPDATE/',
                             '/VALUES/',
                             '/UNION/',
@@ -42,12 +46,22 @@ class ColoredFile extends aLogStream{
                             '/NOW/',
                             '/TIME/'];
     
-	protected function init(){
+    /**
+     * @return ColoredFile
+     * 
+     * {@inheritDoc}
+     * @see \ZimLogger\Streams\aLogStream::init()
+     */
+    protected function init():\ZimLogger\Streams\aLogStream{
 		$this->log_name = $this->target_stream . $this->log_name . @date('m_d_Y', time()).'.log';
 		return $this;	
 	}
 	
-	protected function log($inp,$severity,$full_stack_data = null){
+	/**
+	 * {@inheritDoc}
+	 * @see \ZimLogger\Streams\aLogStream::log()
+	 */
+	protected function log($inp,$severity,$full_stack_data = null):void{
 	    //TODO move to a formatter later.
 	    $inp = str_replace("\t","    ",$inp);
 	    if($severity == self::VERBOSITY_LVL_DEBUG){
@@ -70,7 +84,12 @@ class ColoredFile extends aLogStream{
 		fclose($stream);
 	}
 	
-	static private function colorize($txt,$color){
+	/**
+	 * @param string $txt
+	 * @param string $color
+	 * @return string
+	 */
+	static private function colorize($txt,$color):string{
 	    return "\033[38;5;{$color}m{$txt}\033[0m";
 	}
 }

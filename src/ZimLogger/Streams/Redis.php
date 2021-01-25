@@ -1,11 +1,16 @@
-<?php namespace Talis\Logger\Streams;
+<?php namespace ZimLogger\Streams;
 /**
  * run redis-cli monitor | php ./redis_format.php | tee baba.log
  * @author Itay Moav
  *
  */
 class Redis extends aLogStream{
-	protected function log($inp,$severity,$full_stack_data = null){
+    
+    /**
+     * {@inheritDoc}
+     * @see \ZimLogger\Streams\aLogStream::log()
+     */
+	protected function log($inp,$severity,$full_stack_data = null):void{
     	$config = app_env();
         $host  = $config['database']['redis']['host'];
         try{
@@ -31,7 +36,7 @@ class Redis extends aLogStream{
     $line = explode('"REDIS_MONITOR" "',$line)[1];
     $line = substr($line,0,-2)."\n";
     $line = str_replace(['\n','\t'],["\n","\t"],$line);
-     fputs(STDOUT,$line);
+    fputs(STDOUT,$line);
 }
  
  

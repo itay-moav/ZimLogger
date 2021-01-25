@@ -1,4 +1,4 @@
-<?php namespace Talis\Logger\Streams;
+<?php namespace ZimLogger\Streams;
 abstract class aLogStream{
 	public const	VERBOSITY_LVL_DEBUG		= 4,
 					VERBOSITY_LVL_INFO		= 3,
@@ -77,40 +77,74 @@ abstract class aLogStream{
 		$this->init();
 	}
 	
-	protected function init(){
+	/**
+	 * 
+	 * @return \ZimLogger\Streams\aLogStream
+	 */
+	protected function init():\ZimLogger\Streams\aLogStream{
 		return $this;
 	}
 	
-	public function debug($inp){
+	/**
+	 * 
+	 * @param mixed $inp
+	 */
+	public function debug($inp):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_DEBUG){
 			$this->tlog($inp,self::VERBOSITY_LVL_DEBUG);
 		}
 	}
 	
-	public function info($inp,$full_stack){
+	/**
+	 * 
+	 * @param mixed $inp
+	 * @param bool $full_stack
+	 */
+	public function info($inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_INFO){
 			$this->tlog($inp,self::VERBOSITY_LVL_INFO,$full_stack);
 		}
 	}
 	
-	public function warning($inp,$full_stack){
+	/**
+	 * 
+	 * @param mixed $inp
+	 * @param bool $full_stack
+	 */
+	public function warning($inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_WARNING){
 			$this->tlog($inp,self::VERBOSITY_LVL_WARNING,$full_stack);
 		}
 	}
-	
-	public function error($inp,$full_stack){
+
+	/**
+	 * 
+	 * @param mixed $inp
+	 * @param bool $full_stack
+	 */
+	public function error($inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_ERROR){
 			$this->tlog($inp,self::VERBOSITY_LVL_ERROR,$full_stack);
 		}
 	}
 	
-	public function fatal($inp,$full_stack){
+	/**
+	 * 
+	 * @param mixed $inp
+	 * @param bool $full_stack
+	 */
+	public function fatal($inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_FATAL){
 			$this->tlog($inp,self::VERBOSITY_LVL_FATAL,$full_stack);
 		}
 	}
 	
+	/**
+	 * This will prevent some big log dumps on crashes.
+	 * Turn this on only after memory issues are found.
+	 * 
+	 * @param bool $use_low_memory_footprint
+	 */
 	final public function setUseLowMemoryFootprint(bool $use_low_memory_footprint):void{
 		$this->use_low_memory_footprint = $use_low_memory_footprint;
 	}
