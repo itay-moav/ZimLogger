@@ -102,8 +102,9 @@ abstract class MainZim{
 	 * Subscribe callable datasource to the default logger.
 	 * 
 	 * @param callable $func
+	 * @param string $label
 	 */
-	static public function full_stack_subscribe_to_default(callable $func):void{
-	    self::$CurrentLogger->full_stack_subscribe($func);
+	static public function full_stack_subscribe_to_default(callable $func,string $label):void{
+	    self::$CurrentLogger->full_stack_subscribe($func,$label);
 	}
 }

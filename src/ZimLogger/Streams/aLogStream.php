@@ -102,9 +102,10 @@ abstract class aLogStream{
 	 * Function to fetch more data when full stack is triggered.
 	 * 
 	 * @param callable $func
+	 * @param string $label
 	 */
-	public function full_stack_subscribe(callable $func):void{
-	    $this->full_stack_subscribers[] = $func;
+	public function full_stack_subscribe(callable $func,string $label):void{
+	    $this->full_stack_subscribers[$label] = $func;
 	}
 	
 	/**
@@ -113,8 +114,8 @@ abstract class aLogStream{
 	 */
 	protected function get_full_stack_subscribers_data():array{
 	    $debug_data = [];
-	    foreach($this->full_stack_subscribers as $subscriber){
-	        $debug_data[] = print_r($subscriber(),true);
+	    foreach($this->full_stack_subscribers as $label=>$subscriber){
+	        $debug_data[$label] = print_r($subscriber(),true);
 	    }
 	    return $debug_data;
 	}
