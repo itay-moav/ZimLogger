@@ -21,6 +21,26 @@ abstract class aLogStream{
 	          $full_stack_subscribers   = []
 	;
 	
+    /**
+     * Used to add some identifier to each log.
+     * Usefull when u have different loggers that u want different 
+     * messages to be linked
+     * 
+     * @var string
+     */
+    protected string $call_sig = '';
+	
+    /**
+     * Used to add some identifier to each log.
+     * Usefull when u have different loggers that u want different 
+     * messages to be linked
+     * 
+     * @param string $call_sig
+     */
+    public function setCallSignature(string $call_sig):void{
+		$this->call_sig = $call_sig;
+	  }
+	  
 	/**
 	 * @param string $inp
 	 * @param int $severity

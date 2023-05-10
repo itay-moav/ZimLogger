@@ -23,7 +23,7 @@ class File extends aLogStream{
 		if(!$stream){
 		    throw new \Exception("Could not open [{$this->log_name}]");
 		}
-		fwrite($stream, "[{$severity}][".@date('h:i:s', time())."] ".$inp.PHP_EOL);
+		fwrite($stream, "[{$severity}][".@date('h:i:s', time())."] [{$this->call_sig}] ".$inp.PHP_EOL);
 		if($full_stack_data){
 		    fwrite($stream, "[FULL STACK] \n" . print_r($full_stack_data,true) . PHP_EOL);
 		}
