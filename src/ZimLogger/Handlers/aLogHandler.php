@@ -1,11 +1,10 @@
-<?php namespace ZimLogger\Streams;
+<?php namespace ZimLogger\Handlers;
 /**
  * 
  * @author itay
  *
  */
-//TOBEDELETED next version
-abstract class aLogStream{
+abstract class aLogHandler{
 	public const	VERBOSITY_LVL_DEBUG		= 4,
 					VERBOSITY_LVL_INFO		= 3,
 					VERBOSITY_LVL_WARNING	= 2,
@@ -104,21 +103,6 @@ abstract class aLogStream{
 			        'object' => 'OBJECT ['.get_class($inp).'] ' . substr(print_r($inp,true),0,1000),
 			        default  => ' GOT TYPE OF VAR [' . gettype($inp) . ']' . substr(print_r($inp,true),0,1000)
 			    };
-			    
-			    /*TOBEDELETED
-				switch (gettype($inp)){
-					case 'array':
-					    $text_inp = print_r($inp,true);
-						break;
-						
-					case 'object':
-					    $text_inp = get_class($inp);
-						break;
-						
-					default:
-					    $text_inp = ' GOT TYPE OF VAR ' . gettype($inp);
-						break;
-				}*/
 				
 			} else {
 			    $text_inp = print_r($inp,true);
@@ -208,7 +192,7 @@ abstract class aLogStream{
 	 * 
 	 * @param mixed $inp
 	 */
-	public function debug($inp):void{
+	public function debug(mixed $inp):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_DEBUG){
 			$this->tlog($inp,self::VERBOSITY_LVL_DEBUG);
 		}
@@ -219,7 +203,7 @@ abstract class aLogStream{
 	 * @param mixed $inp
 	 * @param bool $full_stack
 	 */
-	public function info($inp,bool $full_stack):void{
+	public function info(mixed $inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_INFO){
 			$this->tlog($inp,self::VERBOSITY_LVL_INFO,$full_stack);
 		}
@@ -230,7 +214,7 @@ abstract class aLogStream{
 	 * @param mixed $inp
 	 * @param bool $full_stack
 	 */
-	public function warning($inp,bool $full_stack):void{
+	public function warning(mixed $inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_WARNING){
 			$this->tlog($inp,self::VERBOSITY_LVL_WARNING,$full_stack);
 		}
@@ -241,7 +225,7 @@ abstract class aLogStream{
 	 * @param mixed $inp
 	 * @param bool $full_stack
 	 */
-	public function error($inp,bool $full_stack):void{
+	public function error(mixed $inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_ERROR){
 			$this->tlog($inp,self::VERBOSITY_LVL_ERROR,$full_stack);
 		}
@@ -252,7 +236,7 @@ abstract class aLogStream{
 	 * @param mixed $inp
 	 * @param bool $full_stack
 	 */
-	public function fatal($inp,bool $full_stack):void{
+	public function fatal(mixed $inp,bool $full_stack):void{
 		if($this->verbosity_level >= self::VERBOSITY_LVL_FATAL){
 			$this->tlog($inp,self::VERBOSITY_LVL_FATAL,$full_stack);
 		}

@@ -1,9 +1,9 @@
-<?php namespace ZimLogger\Streams;
-class File extends aLogStream{
+<?php namespace ZimLogger\Handlers;
+class File extends aLogHandler{
     
     /**
      * {@inheritDoc}
-     * @see \ZimLogger\Streams\aLogStream::init()
+     * @see \ZimLogger\Handlers\aLogHandler::init()
      */
     protected function init():void{
         $this->log_name = $this->endpoint . $this->log_name . @date('m_d_Y', time()).'.log';
@@ -13,7 +13,7 @@ class File extends aLogStream{
 	 * @throws \Exception
 	 * 
 	 * {@inheritDoc}
-	 * @see \ZimLogger\Streams\aLogStream::log()
+	 * @see \ZimLogger\Handlers\aLogHandler::log()
 	 */
 	protected function log(string $inp,int $severity,array $full_stack_data = []):void{
 		$stream = fopen($this->log_name, 'a');

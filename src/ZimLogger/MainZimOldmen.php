@@ -13,12 +13,12 @@ abstract class MainZim{
     }
     
 	/**
-	 * @var \ZimLogger\Handlers\aLogHandler global/default Logger to be used in the app.
+	 * @var \ZimLogger\Streams\aLogStream current Logger to be used in the app.
 	 * 
-	 *             To change global Logger, simply use the factory again (or just instantiate 
-	 *             the logger you want).
+	 *             To change current Logger, simply use the factory again (or just instantiate 
+	 *             the logger you want.
 	 */
-    static public \ZimLogger\Handlers\aLogHandler $GlobalLogger;
+    static public \ZimLogger\Streams\aLogStream $CurrentLogger;
 	
 	/**
 	 * Sets the global logger as a static member in MainZim, it is the one who will be accessible from the dbg() functions 
@@ -37,10 +37,10 @@ abstract class MainZim{
 	 * @param bool $use_low_memory_footprint This flag will prevent from a full dump of an object, as there might be huge objects which can cause out of memory errors.
 	 *                                       Flag can also be used differently in each concrete logger 
 	 *
-	 * @return \ZimLogger\Handlers\aLogHandler
+	 * @return \ZimLogger\Streams\aLogStream
 	 */
-    static public function setGlobalLogger(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Handlers\aLogHandler{
-	    return self::$GlobalLogger = self::factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
+	static public function setGlobalLogger(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
+	    return self::$CurrentLogger = self::factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
 	
 	/**
@@ -59,16 +59,16 @@ abstract class MainZim{
 	 * @param bool $use_low_memory_footprint This flag will prevent from a full dump of an object, as there might be huge objects which can cause out of memory errors.
 	 *                                       Flag can also be used differently in each concrete logger
 	 *
-	 * @return \ZimLogger\Handlers\aLogHandler
+	 * @return \ZimLogger\Streams\aLogStream
 	 */
-	static public function factory(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Handlers\aLogHandler{
+	static public function factory(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
 	    $class_name = '';
 	    if(strpos($logger_classname, '_')){
 	        $class_name = '\\' . $logger_classname;  
 	    } elseif(strpos($logger_classname, '\\') !== false){
 	        $class_name = $logger_classname;
 	    } else {
-	        $class_name = '\ZimLogger\Handlers\\' . ucfirst($logger_classname);
+	        $class_name = '\ZimLogger\Streams\\' . ucfirst($logger_classname);
 	    }
 	    return new $class_name($log_name,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
@@ -82,9 +82,9 @@ abstract class MainZim{
 	 *                              to write into requires a more complex data structure to connect (like username + password+port) Use
 	 *                              DSN like formatted string to pass these values as one string
 	 * @param bool $use_low_memory_footprint
-	 * @return \ZimLogger\Handlers\aLogHandler
+	 * @return \ZimLogger\Streams\aLogStream
 	 */
-	static public function factory2(string $log_name,string $logger_full_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Handlers\aLogHandler{
+	static public function factory2(string $log_name,string $logger_full_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
 	    return new $logger_full_classname($log_name,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
 	
@@ -93,7 +93,7 @@ abstract class MainZim{
 	 * until this becomes an issue, this value will not pass on if current logger is switched inside the same session.
 	 */
 	static public function currentLoggerUseLowMemoryFootprint():void{
-		self::$GlobalLogger->setUseLowMemoryFootprint(true);
+		self::$CurrentLogger->setUseLowMemoryFootprint(true);
 	}
 	
 	/**
@@ -103,6 +103,6 @@ abstract class MainZim{
 	 * @param string $label
 	 */
 	static public function full_stack_subscribe_to_default(callable $func,string $label):void{
-	    self::$GlobalLogger->full_stack_subscribe($func,$label);
+	    self::$CurrentLogger->full_stack_subscribe($func,$label);
 	}
 }

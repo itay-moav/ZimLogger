@@ -3,7 +3,7 @@
  * 
  * @param mixed $var
  */
-function dbg($var):void{
+function dbg(mixed $var):void{
     \ZimLogger\MainZim::$CurrentLogger->debug($var);
 }
 
@@ -11,31 +11,31 @@ function dbg($var):void{
  * 
  * @param mixed $var
  */
-function dbgd($var):void{
+function dbgd(mixed $var):void{
     dbg($var);
     die;
 }
 
 /**
- * @param string $n
+ * @param string|int $n
  */
-function dbgn(string $n):void{
+function dbgn(string|int $n):void{
     dbg('===================' . $n . '===================');
 }
 
 /**
- * @param string $n
+ * @param string|int $n
  */
-function dbgnd(string $n):void{
+function dbgnd(string|int $n):never{
     dbgn($n);
     die;
 }
 
 /**
- * @param string $n
+ * @param string|int $n
  * @param mixed $var
  */
-function dbgr(string $n,$var):void{
+function dbgr(string|int $n,mixed $var):void{
     dbgn($n);
     dbg($var);
 }
@@ -44,7 +44,7 @@ function dbgr(string $n,$var):void{
  * @param string $n
  * @param mixed $var
  */
-function dbgrd(string $n,$var):void{
+function dbgrd(string|int $n,mixed $var):never{
     dbgr($n,$var);
     die;
 }
@@ -52,7 +52,7 @@ function dbgrd(string $n,$var):void{
 /**
  * @param mixed $inp
  */
-function debug($inp):void {
+function debug(mixed $inp):void {
     \ZimLogger\MainZim::$CurrentLogger->debug($inp);
 }
 
@@ -60,7 +60,7 @@ function debug($inp):void {
  * @param mixed $inp
  * @param bool $full_stack
  */
-function info($inp,bool $full_stack=false):void {
+function info(mixed $inp,bool $full_stack=false):void {
     \ZimLogger\MainZim::$CurrentLogger->info($inp, $full_stack);
 }
 
@@ -68,7 +68,7 @@ function info($inp,bool $full_stack=false):void {
  * @param mixed $inp
  * @param bool $full_stack
  */
-function warning($inp,bool $full_stack=false):void {
+function warning(mixed $inp,bool $full_stack=false):void {
     \ZimLogger\MainZim::$CurrentLogger->warning($inp, $full_stack);
 }
 
@@ -76,7 +76,7 @@ function warning($inp,bool $full_stack=false):void {
  * @param mixed $inp
  * @param bool $full_stack
  */
-function error($inp,bool $full_stack=false):void{
+function error(mixed $inp,bool $full_stack=false):void{
     \ZimLogger\MainZim::$CurrentLogger->error($inp, $full_stack);
 }
 
@@ -84,6 +84,6 @@ function error($inp,bool $full_stack=false):void{
  * @param mixed $inp
  * @param bool $full_stack
  */
-function fatal($inp,bool $full_stack=false):void{
+function fatal(mixed $inp,bool $full_stack=false):void{
     \ZimLogger\MainZim::$CurrentLogger->fatal($inp, $full_stack);
 }

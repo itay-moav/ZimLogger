@@ -1,5 +1,5 @@
-<?php namespace ZimLogger\Streams;
-class ColoredFile extends aLogStream{
+<?php namespace ZimLogger\Handlers;
+class ColoredFile extends aLogHandler{
     const   VI_COLOR__RED   = 9,
             VI_COLOR__BLUE  = 12,
             VI_COLOR__GREEN = 2,
@@ -50,7 +50,7 @@ class ColoredFile extends aLogStream{
     
     /**
      * {@inheritDoc}
-     * @see \ZimLogger\Streams\aLogStream::init()
+     * @see \ZimLogger\Handlers\aLogHandler::init()
      */
     protected function init():void{
         $this->log_name = $this->endpoint . $this->log_name . @date('m_d_Y', time()).'.log';
@@ -58,7 +58,7 @@ class ColoredFile extends aLogStream{
 	
 	/**
 	 * {@inheritDoc}
-	 * @see \ZimLogger\Streams\aLogStream::log()
+	 * @see \ZimLogger\Handlers\aLogHandler::log()
 	 */
 	protected function log(string $inp,int $severity,array $full_stack_data = []):void{
 	    //TODO move to a formatter later.
