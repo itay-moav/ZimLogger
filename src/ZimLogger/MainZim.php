@@ -18,10 +18,13 @@ abstract class MainZim{
 	 *             To change global Logger, simply use the factory again (or just instantiate 
 	 *             the logger you want).
 	 */
-    static public \ZimLogger\Handlers\aLogHandler $GlobalLogger;
-    static public \ZimLogger\Streams\aLogStream $CurrentLogger;
+    
+    //ACTIVATE static public \ZimLogger\Handlers\aLogHandler $GlobalLogger;
 	
-	/**
+	static public $GlobalLogger;
+    static public $CurrentLogger;
+	
+    /**
 	 * Sets the global logger as a static member in MainZim, it is the one who will be accessible from the dbg() functions 
 	 * 
 	 * @param string $log_name		A name for the log output (for example, if this is a file log, this would be part of the file name, usage
@@ -54,7 +57,7 @@ abstract class MainZim{
 	 * @return \ZimLogger\Streams\aLogStream
 	 */
 	static public function setCurrentLogger(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
-	    return self::$CurrentLogger = self::old_factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
+	    return self::$GlobalLogger = self::$CurrentLogger = self::old_factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
 	
 	/**

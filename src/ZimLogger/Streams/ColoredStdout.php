@@ -1,4 +1,4 @@
-<?php namespace ZimLogger\Handlers;
+<?php namespace ZimLogger\Streams;
 class ColoredStdout extends aLogStream{
    
     /**
