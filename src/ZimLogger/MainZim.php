@@ -19,6 +19,7 @@ abstract class MainZim{
 	 *             the logger you want).
 	 */
     static public \ZimLogger\Handlers\aLogHandler $GlobalLogger;
+    static public \ZimLogger\Streams\aLogStream $CurrentLogger;
 	
 	/**
 	 * Sets the global logger as a static member in MainZim, it is the one who will be accessible from the dbg() functions 
@@ -41,6 +42,19 @@ abstract class MainZim{
 	 */
     static public function setGlobalLogger(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Handlers\aLogHandler{
 	    return self::$GlobalLogger = self::factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
+	}
+	
+	/**
+	 * TOBEDELETED
+	 * @param string $log_name
+	 * @param string $logger_classname
+	 * @param int $verbosity_level
+	 * @param string $endpoint
+	 * @param bool $use_low_memory_footprint
+	 * @return \ZimLogger\Streams\aLogStream
+	 */
+	static public function setCurrentLogger(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
+	    return self::$CurrentLogger = self::old_factory($log_name,$logger_classname,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
 	
 	/**
@@ -69,6 +83,28 @@ abstract class MainZim{
 	        $class_name = $logger_classname;
 	    } else {
 	        $class_name = '\ZimLogger\Handlers\\' . ucfirst($logger_classname);
+	    }
+	    return new $class_name($log_name,$verbosity_level,$endpoint,$use_low_memory_footprint);
+	}
+	
+	
+	/**
+	 * TOBEDELETED
+	 * @param string $log_name
+	 * @param string $logger_classname
+	 * @param int $verbosity_level
+	 * @param string $endpoint
+	 * @param bool $use_low_memory_footprint
+	 * @return \ZimLogger\Streams\aLogStream
+	 */
+	static public function old_factory(string $log_name,string $logger_classname,int $verbosity_level,string $endpoint='',bool $use_low_memory_footprint=false):\ZimLogger\Streams\aLogStream{
+	    $class_name = '';
+	    if(strpos($logger_classname, '_')){
+	        $class_name = '\\' . $logger_classname;
+	    } elseif(strpos($logger_classname, '\\') !== false){
+	        $class_name = $logger_classname;
+	    } else {
+	        $class_name = '\ZimLogger\Streams\\' . ucfirst($logger_classname);
 	    }
 	    return new $class_name($log_name,$verbosity_level,$endpoint,$use_low_memory_footprint);
 	}
